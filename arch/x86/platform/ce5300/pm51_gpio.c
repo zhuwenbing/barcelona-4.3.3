@@ -510,6 +510,7 @@ static int fan_io_proc_open(struct inode *inode, struct file *file)
 }
 
 static struct file_operations proc_fan_io_operations = {
+	.owner = THIS_MODULE,
 	.open = fan_io_proc_open,
 	.read = seq_read,
 	.write = fan_io_proc_write,

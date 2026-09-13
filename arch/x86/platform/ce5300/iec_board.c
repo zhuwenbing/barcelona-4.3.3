@@ -28,7 +28,7 @@
 #include <linux/vt_kern.h>
 #include <linux/reboot.h>
 #include <linux/pci.h>
-
+#include <linux/workqueue.h>
 #include <linux/fcntl.h>
 #include <linux/spinlock.h>
 //#include <linux/smp_lock.h>
@@ -292,6 +292,7 @@ static int proc_board_io_open(struct inode *inode, struct file *file)
 }
 
 static struct file_operations proc_board_io_operations = {
+	.owner = THIS_MODULE,
 	.open = proc_board_io_open,
 	.read = seq_read,
 	.write = proc_board_io_write,
@@ -440,6 +441,7 @@ static ssize_t board_event_read(struct file *file, char __user * buffer,
 }
 
 static struct file_operations proc_board_event_operations = {
+	.owner = THIS_MODULE,
 	.read = board_event_read,
 };
 
@@ -528,6 +530,7 @@ out2:
 }
 
 static struct file_operations proc_wdtsetting_operations = {
+	.owner = THIS_MODULE,
 	.write = proc_wdtsetting_write,
 };
 
@@ -639,7 +642,8 @@ static __init int board_io_init(void)
 	}
 	// pde->proc_fops = &proc_board_event_operations;
 	// add our work queue
-	my_workqueue = create_workqueue(MY_WORK_QUEUE_NAME);
+	my_workqueue = alloc_workqueue(MY_WORK_QUEUE_NAME,
+			WQ_MEM_RECLAIM | WQ_FREEZABLE, 1);
 	if (my_workqueue) {
 		queue_delayed_work(my_workqueue, &btn_sched, dyn_work_queue_timer);
 		// need a routine thread for SATA ACT_LED
