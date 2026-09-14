@@ -618,29 +618,19 @@ static __init int board_io_init(void)
 	for (n = 0; n < 2; n++)
 		qc_cur[n]=LED_OFF;
 
-#if 0
--       entry = create_proc_entry("sequence", 0, NULL);
--       if (entry)
--               entry->proc_fops = &ct_file_ops;
-+       entry = proc_create("sequence", 0, NULL, &ct_file_ops);
-#endif
 	// create BOARD_io and theucs_event proc nodes
-	// pde = create_proc_entry("BOARD_io", 0, NULL);
-	pde = proc_create("BOARD_io", 0, NULL, &proc_board_io_operations);	
+	pde = proc_create("BOARD_io", 0, NULL, &proc_board_io_operations);
 	if (!pde) {
 		printk(KERN_ERR "board_io: cannot create /proc/BOARD_io.\n");
 		ret = -ENOENT;
 		goto io_out;
 	}
-	// pde->proc_fops = &proc_board_io_operations;
-	// pde = create_proc_entry("BOARD_event", S_IRUSR, NULL);
 	pde = proc_create("BOARD_event", S_IRUSR, NULL, &proc_board_event_operations);
 	if (!pde) {
 		printk(KERN_ERR "board_io: cannot create /proc/BOARD_event.\n");
 		ret = -ENOENT;
 		goto event_out;
 	}
-	// pde->proc_fops = &proc_board_event_operations;
 	// add our work queue
 	my_workqueue = alloc_workqueue(MY_WORK_QUEUE_NAME,
 			WQ_MEM_RECLAIM | WQ_FREEZABLE, 1);
@@ -657,13 +647,11 @@ static __init int board_io_init(void)
 	}
 //IEC-ADD by EDEN for userspace init wdtSetWatchdog start at 20151113
 	pde = proc_create("WdtSetting", S_IRUSR, NULL, &proc_wdtsetting_operations);
-	// pde = create_proc_entry("WdtSetting", S_IRUSR, NULL);
 	if (!pde) {
 		printk(KERN_ERR "board_io: cannot create /proc/WdtSetting.\n");
 		ret = -ENOENT;
 		goto wdt_out;
 	}
-	// pde->proc_fops = &proc_wdtsetting_operations;
 //IEC-ADD by EDEN for userspace init wdtSetWatchdog end at 20151113
 
 	register_pm_notifier(&pm_notifier_board);

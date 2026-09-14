@@ -521,20 +521,6 @@ static struct file_operations proc_fan_io_operations = {
 int pm51_init_procfs(void)
 {
 	struct proc_dir_entry *pde;
-#if 0
-      	entry = create_proc_entry("sequence", 0, NULL);
-        if (entry)
-                entry->proc_fops = &ct_file_ops;
-        entry = proc_create("sequence", 0, NULL, &ct_file_ops);
-#endif
-
-#if 0
-	pde = create_proc_entry("FAN_io", 0, NULL);
-	if (!pde)
-		return -ENOMEM;
-	pde->proc_fops = &proc_fan_io_operations;
-#endif
-
 	pde = proc_create("FAN_io", 0, NULL, &proc_fan_io_operations);
 
 	if (!pde)
