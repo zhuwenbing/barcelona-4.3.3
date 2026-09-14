@@ -428,11 +428,7 @@ static ssize_t board_event_read(struct file *file, char __user * buffer,
 		finished = 0;
 		return 0;
 	}
-//      printk(KERN_DEBUG "process %i (%s) going to sleep\n",
-//           current->pid, current->comm);
-//	interruptible_sleep_on(&board_event_queue);
 	wait_event_interruptible(board_event_queue, strlen(Message) > 0);
-//      printk(KERN_DEBUG "awoken %i (%s)\n", current->pid, current->comm);
 	for (i = 0; i < length && Message[i]; i++)
 		put_user(Message[i], buffer + i);
 
